@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iFlyChatBot.UI v2.0</title>
+	<link href="{{ url_for('site.static', filename='bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ url_for('site.static', filename='modernizr-2.6.2.js') }}"></script>
+    <style>
+        body {
+            padding-top: 70px;
+        }
+    </style>
+    <script src="{{ url_for('site.static', filename='jquery-1.10.2.min.js') }}"></script>
+</head>
+<body>
+	{% with site_count=3, user_count=10, source_count=s_count, reader_count=5 %}
+		{% include "nav.html" %}
+	{% endwith %}
+    <div class="container body-content">
+		{% block content %}
+		{% endblock %}
+		<hr />
+		<footer>
+			<p>&copy; 2016 - iFlyChatBot.UI</p>
+		</footer>
+	</div>
+    <script src="{{ url_for('site.static', filename='bootstrap.min.js') }}"></script>
+</body>
+</html>

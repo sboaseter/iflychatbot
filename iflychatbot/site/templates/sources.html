@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 style="color:#3a87ad;"><span class="glyphicon glyphicon-download-alt"></span> Sources</h3>
+<div class="row">
+	<div class="col-md-6">
+		<a href="{{ url_for('site.source_detail', id=0) }}" style="float:right;">New</a>
+		<table class="table table-condensed table-hover">
+			<thead>
+				<tr>
+					<th>Username</th>
+					<th>Id</th>
+					<th style="text-align:center;"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for s in all_sources %}
+					<tr>
+						<td>
+							<a href="http://twitter.com/{{ s.name }}"><img style="max-height:24px;" src="static/twitter.png"> {{ s.name}}</a>
+						</td>
+						<td{% if s.id_str == None %} class="danger" {% else %} class="success" {% endif %}> {{ s.id_str }}</td>
+						<td>
+							<a href="{{ url_for('site.source_remove', id=s.id) }}">Delete</a>
+							<a href="{{ url_for('site.source_detail', id=s.id) }}">Edit</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 style="color:#3a87ad;"><span class="glyphicon glyphicon-globe"></span> Sites</h3>
+<div class="row">
+	<div class="col-md-6">
+		<table class="table table-condensed table-hover">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th style="text-align:center;">Room</th>
+					<th style="text-align:center;"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for s in all_sites %}
+					<tr>
+						<td> {{ s.name }}</td>
+						<td> {{ s.ifc_room_id }}</td>
+						<td>
+							<a href="#">Delete</a>
+							<a href="#">Edit</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<a href="#">New</a>
+	</div>
+</div>
+{% endblock %}

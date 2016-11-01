@@ -1,0 +1,45 @@
+    <div class="navbar  navbar-fixed-top" style="background-color: white; border-bottom: 1px solid #42a8e1;">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" rel="home" href="~/Admin" title="Brand" style="padding-top: 10px; padding-bottom: 10px">
+                    <img style="height: 100%;" src="{{ url_for('site.static', filename='brand.jpg') }}" width="32"> iFlyChatBot.UI v2.0
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <!--@RenderSection("BotControlls", false)-->
+                    </li>
+                    
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="{{ url_for('site.index') }}">
+                            <span class="glyphicon glyphicon-info-sign"></span> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('site.sites') }}">
+                            <span class="glyphicon glyphicon-globe"></span> Sites ({{ site_count }})
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('site.users') }}">
+                            <span class="glyphicon glyphicon-user"></span> Users ({{ user_count }})
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('site.sources') }}">
+                            <span class="glyphicon glyphicon-download-alt"></span> Sources ({{ source_count }})
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>

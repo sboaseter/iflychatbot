@@ -1,0 +1,5 @@
+<!doctype html>
+<title>iFlyChatBot</title>
+{% if title %}
+  <h1>{{ title }} : test!</h1>
+{% endif %}
