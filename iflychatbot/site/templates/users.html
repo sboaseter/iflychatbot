@@ -34,14 +34,14 @@
                         
                         <td><img src="{{ u.image }}" alt="profile_pic" style="max-height:32px;" /></td>
                         <td>
-							<a href="#">Delete</a>
-							<a href="#">Edit</a>
+							<a href="{{ url_for('site.user_remove', id=u.id) }}">Delete</a>
+							<a href="{{ url_for('site.user_detail', id=u.id) }}">Edit</a>
                         </td>
                    </tr>
 				{% endfor %}
             </tbody>
         </table>
-		<a href="#">New</a>
+		<a href="{{ url_for('site.user_detail', id=0) }}" style="float:right;">New</a>
     </div>
 </div>
 {% endblock %}

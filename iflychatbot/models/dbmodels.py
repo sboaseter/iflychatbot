@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, DateTime
 from iflychatbot.models.shared import Base
 
 class Site(Base):
@@ -49,13 +49,15 @@ class Source(Base):
 	name = Column('name', String(256))
 	id_str = Column('id_str', String(64))
 	profile_image_url = Column('profile_image_url', String(2048))
+	created_at = Column('created_at', DateTime)
+	updated_at = Column('updated_at', DateTime)
 
 	def __init__(self):
 		tweets = []
 
 	def __repr__(self):
-		return "{} [ id: {}, id_str: {} ]"\
-		.format(self.name, self.id, self.id_str)
+		return "{} [ id: {}, id_str: {}, created_at: {}, updated_at: {} ]"\
+		.format(self.name, self.id, self.id_str, self.created_at, self.updated_at)
 
 class Source_Tweet(Base):
 	__tablename__ = 'source_tweet'
@@ -64,13 +66,14 @@ class Source_Tweet(Base):
 	id_str = Column('id_str', String(64))
 	screen_name = Column('screen_name', String(256))
 	text = Column('text', String(1024))
+	created_at = Column('created_at', DateTime)
 	raw = Column('raw', Text)
 
 	def __init__(self): pass
 
 	def __repr__(self):
-		return "{} [ id_str: {}, text: {} ]"\
-		.format(self.screen_name, self.id_str, self.text)
+		return "{} [ {}: text: {} ]"\
+		.format(self.screen_name, self.created_all, self.text)
 
 
 class Reader(Base):

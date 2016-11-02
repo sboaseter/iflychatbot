@@ -156,4 +156,4 @@ print(type(twitter_user_ids))
 
 twitterStream.filter(follow=twitter_user_ids)
 
-
+# refactor
