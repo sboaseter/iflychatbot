@@ -25,7 +25,8 @@ class User(Base):
 	source_name = Column('source_name', String(256))
 	image = Column('image', String(2048))
 
-	def __init__(self): pass
+	def __init__(self):
+		self.source = None
 
 	def __repr__(self):
 		return "{} [ id: {}, active: {}, source_id: {}, image: {} ]"\
@@ -73,7 +74,7 @@ class Source_Tweet(Base):
 
 	def __repr__(self):
 		return "{} [ {}: text: {} ]"\
-		.format(self.screen_name, self.created_all, self.text)
+		.format(self.screen_name, self.created_at, self.text.encode('utf-8'))
 
 
 class Reader(Base):

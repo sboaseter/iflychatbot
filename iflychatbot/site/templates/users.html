@@ -3,6 +3,7 @@
 <h3 style="color:#3a87ad;"><span class="glyphicon glyphicon-user"></span> Users</h3>
 <div class="row">
     <div class="col-md-10">
+		<a href="{{ url_for('site.user_detail', id=0) }}" class="btn btn-xs btn-info" style="float:right;"><span class="glyphicon glyphicon-plus"></a>
         <table class="table table-condensed table-hover">
             <thead>
                 <tr>
@@ -33,15 +34,13 @@
 						{% endif %}
                         
                         <td><img src="{{ u.image }}" alt="profile_pic" style="max-height:32px;" /></td>
-                        <td>
-							<a href="{{ url_for('site.user_remove', id=u.id) }}">Delete</a>
-							<a href="{{ url_for('site.user_detail', id=u.id) }}">Edit</a>
-                        </td>
+						<td style="text-align:right;">
+							<a href="{{ url_for('site.user_detail', id=u.id) }}" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-edit"></a>
+						</td>
                    </tr>
 				{% endfor %}
             </tbody>
         </table>
-		<a href="{{ url_for('site.user_detail', id=0) }}" style="float:right;">New</a>
     </div>
 </div>
 {% endblock %}

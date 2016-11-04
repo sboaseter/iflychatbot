@@ -62,6 +62,8 @@ class TwitterSphere(StreamListener):
 			tweet = all_data["text"]
 			username = all_data["user"]["screen_name"].lower()
 			id_str = all_data["user"]["id_str"]
+			created_at = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(all_data['created_at'],'%a %b %d %H:%M:%S +0000 %Y'))
+
 		except KeyError:
 			print('Tweet with no text: {0}'.format(str(all_data).encode('utf-8')))
 			return True
@@ -70,16 +72,17 @@ class TwitterSphere(StreamListener):
 #		sys.stdout.write('.')
 #		sys.stdout.flush()
 
-#		stdb = Source_Tweet()
-#		stdb.id_str = id_str.encode('utf-8')
-#		stdb.screen_name = username.encode('utf-8')
-#		stdb.text = tweet.encode('utf-8')
-#		stdb.raw = str(all_data).encode('utf-8')
+		stdb = Source_Tweet()
+		stdb.id_str = id_str.encode('utf-8')
+		stdb.screen_name = username.encode('utf-8')
+		stdb.text = tweet.encode('utf-8')
+		stdb.created_at = created_at
+		stdb.raw = str(all_data).encode('utf-8')
 
 		if username in twitter_screen_names:
-#			api_url = 'http://192.169.141.201/iflychatbot/api/'
-#			payload = {'screen_name': username.encode('utf-8'), 'tweet': tweet.encode('utf-8')}
-#			response = requests.post(api_url, json=payload)
+			api_url = 'http://192.169.141.201/iflychatbot/api/'
+			payload = {'screen_name': username.encode('utf-8'), 'tweet': tweet.encode('utf-8')}
+			response = requests.post(api_url, json=payload)
 
 			tweet_color = Fore.GREEN
 #			username = '_screen_name_' + username
@@ -100,13 +103,12 @@ class TwitterSphere(StreamListener):
 			else:
 				tweet_color = Fore.RED
 
-#		db.add(stdb)
-#		db.flush()
+		db.add(stdb)
+		db.flush()
 		
-		ts = time.strftime('%d-%m-%Y %H:%M:%S', time.strptime(all_data['created_at'],'%a %b %d %H:%M:%S +0000 %Y'))
 #
 		print('[{}] [Local: {}] User: {}\n\t{}\n'.format(datetime.now().strftime('%H:%M:%S'),
-													ts,
+													created_at,
 													Fore.CYAN+ username + Fore.RESET, 
 													tweet_color + tweet + Fore.RESET))
 		return True

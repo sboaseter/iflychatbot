@@ -26,6 +26,10 @@ def index():
 	except TemplateNotFound:
 		abort(404)
 
+#############
+### Sites ###
+#############
+
 @site.route('sites')
 def sites():
 	try:
@@ -34,6 +38,56 @@ def sites():
 		return render_template('sites.html', all_sites=all_sites)
 	except TemplateNotFound:
 		abort(404)
+
+@site.route('sites/<int:id>/', methods=['GET', 'POST'])
+def site_detail(id):
+	try:
+
+		# Save button
+		if request.method == 'POST':
+			# Save/Edit record
+			if request.form['id'] != None: #form as an Id
+				form_id = int(request.form['id'])
+				form_name = str(request.form['name'].encode('utf-8')).lower()
+			
+
+				if form_id == 0: #New record
+					new_source = Source()
+					new_source.name = form_name
+					db.add(new_source)
+					db.flush()
+				else:
+					existing_source = Source.query.get(form_id)
+					existing_source.name = form_name
+					existing_source.id_str = None
+					db.flush()
+				
+			return redirect(url_for('site.sites'))
+
+		if id == 0:
+			s = Source()
+			s.id = id
+			return render_template('site_detail.html', sd=s)
+		
+		s = Source.query.get(id)
+		s.tweets = Source_Tweet.query.filter(Source_Tweet.id_str == s.id_str).order_by(Source_Tweet.id.desc()).limit(25)
+		print('Source_Tweets:')
+		for st in s.tweets:
+			print(st)
+		return render_template('site_detail.html', sd=s)
+
+	except TemplateNotFound:
+		abort(404)
+
+@site.route('sites/remove/<int:id>/')
+def site_remove(id):
+	Source.query.filter(Source.id == id).delete()
+	db.flush()
+	return redirect(url_for('site.sites'))
+
+#############
+### Users ###
+#############
 
 @site.route('users')
 def users():
@@ -44,6 +98,65 @@ def users():
 		return render_template('users.html', all_users=all_users, all_sources=all_sources)
 	except TemplateNotFound:
 		abort(404)
+
+@site.route('users/<int:id>/', methods=['GET', 'POST'])
+def user_detail(id):
+	try:
+
+		# Save button
+		if request.method == 'POST':
+			# Save/Edit record
+			if request.form['id'] != None: #form as an Id
+				form_id = int(request.form['id'])
+				form_name = str(request.form['name'].encode('utf-8')).lower()
+				form_source_id = request.form['source_id']
+				print('SourceId: {}'.format(form_source_id))
+			
+
+				if form_id == 0: #New record
+#					new_source = Source()
+#					new_source.name = form_name
+#					db.add(new_source)
+#					db.flush()
+					pass
+				else:
+#					existing_source = Source.query.get(form_id)
+#					existing_source.name = form_name
+#					existing_source.id_str = None
+#					db.flush()
+					pass
+				
+			return redirect(url_for('site.users'))
+
+		if id == 0:
+#			s = Source()
+#			s.id = id
+#			return render_template('user_detail.html', sd=s)
+			pass
+		
+		s = Source.query.all()
+		u = User.query.get(id)
+		all_sites = Site.query.all()
+		u.source = next(ms for ms in s if ms.id == u.source_id)	
+		my_source_id_str  = next(ms.id_str for ms in s if ms.id == u.source_id)
+
+		tweets_from_source = Source_Tweet.query.filter(Source_Tweet.id_str == my_source_id_str).order_by(Source_Tweet.id.desc()).limit(25) 
+#		s.tweets = Source_Tweet.query.filter(Source_Tweet.id_str == s.id_str).order_by(Source_Tweet.id).limit(25)
+		return render_template('user_detail.html', ud=u, all_sources=s, all_sites=all_sites, tweets_from_source=tweets_from_source)
+
+	except TemplateNotFound:
+		abort(404)
+
+@site.route('users/remove/<int:id>/')
+def user_remove(id):
+	User.query.filter(User.id == id).delete()
+	db.flush()
+	return redirect(url_for('site.users'))
+
+
+##############
+### Sourcs ###
+##############
 
 @site.route('sources')
 def sources():
@@ -87,7 +200,10 @@ def source_detail(id):
 			return render_template('source_detail.html', sd=s)
 		
 		s = Source.query.get(id)
-		s.tweets = Source_Tweet.query.filter(Source_Tweet.id_str == s.id_str).order_by(Source_Tweet.id).limit(25)
+		s.tweets = Source_Tweet.query.filter(Source_Tweet.id_str == s.id_str).order_by(Source_Tweet.id.desc()).limit(25)
+		print('Source_Tweets:')
+		for st in s.tweets:
+			print(st)
 		return render_template('source_detail.html', sd=s)
 
 	except TemplateNotFound:
@@ -99,56 +215,6 @@ def source_remove(id):
 	db.flush()
 	return redirect(url_for('site.sources'))
 	
-
-
-####
-
-@site.route('users/<int:id>/', methods=['GET', 'POST'])
-def user_detail(id):
-	try:
-
-		# Save button
-		if request.method == 'POST':
-			# Save/Edit record
-			if request.form['id'] != None: #form as an Id
-				form_id = int(request.form['id'])
-				form_name = str(request.form['name'].encode('utf-8')).lower()
-			
-
-				if form_id == 0: #New record
-#					new_source = Source()
-#					new_source.name = form_name
-#					db.add(new_source)
-#					db.flush()
-					pass
-				else:
-#					existing_source = Source.query.get(form_id)
-#					existing_source.name = form_name
-#					existing_source.id_str = None
-#					db.flush()
-					pass
-				
-			return redirect(url_for('site.users'))
-
-		if id == 0:
-#			s = Source()
-#			s.id = id
-#			return render_template('user_detail.html', sd=s)
-			pass
-		
-#		s = Source.query.get(id)
-		u = User.query.get(id)
-#		s.tweets = Source_Tweet.query.filter(Source_Tweet.id_str == s.id_str).order_by(Source_Tweet.id).limit(25)
-		return render_template('user_detail.html', ud=u)
-
-	except TemplateNotFound:
-		abort(404)
-
-@site.route('users/remove/<int:id>/')
-def user_remove(id):
-	User.query.filter(User.id == id).delete()
-	db.flush()
-	return redirect(url_for('site.users'))
 
 
 #simply refresh for latest!

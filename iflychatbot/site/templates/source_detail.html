@@ -21,8 +21,15 @@
 			<div class="form-group">
 				<div class="row">
 					<div class="col-md-4">
-						<a href="{{ url_for('site.sources') }}" class="btn btn-danger">Cancel</a>
-						<input type="submit" value="Save" class="btn btn-success" />
+						<a href="{{ url_for('site.sources') }}" class="btn btn-warning">
+							<span class="glyphicon glyphicon-chevron-left"></span> Cancel
+						</a>
+						<button type="submit" class="btn btn-success">
+							<span class="glyphicon glyphicon-ok"></span> Save
+						</button>
+						<a href="{{ url_for('site.source_remove', id=sd.id) }}" class="btn btn-small btn-danger" style="float:right;">
+							<span class="glyphicon glyphicon-remove"></span> Delete
+						</a>
 					</div>
 				</div>
 			</div>
@@ -36,16 +43,20 @@
 				<tr>
                 	<th>Id</th>
                     <th style="text-align:center;">Tweet</th>
+					<th style="text-align:right;">Date</th>
 				</tr>
             </thead>
             <tbody>
-				{% for tweet in sd.tweets | sort(attribute='id') %}
+				{% for tweet in sd.tweets | sort(attribute='id', reverse=True) %}
 				<tr>
 					<td>
 						{{ tweet.id }}
 					</td>
                 	<td>
 						<img style="max-height:24px;" src="{{ url_for('site.static', filename='twitter.png') }}">	{{ tweet.text }}
+					</td>
+					<td style="text-align:right;">
+						{{ tweet.created_at }}
 					</td>
                </tr>
 				{% endfor %}
