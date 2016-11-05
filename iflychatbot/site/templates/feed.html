@@ -5,9 +5,10 @@
   <ul class="nav nav-tabs" role="tablist">
 	{% for s in all_sites %}
 		{% if loop.first %}
-    		<li role="presentation" class="active"><a href="#site_{{s.id}}" aria-controls="site_{{s.id}}" role="tab" data-toggle="tab">{{s.name}}</a></li>
+    		<li role="presentation" class="active">
+				<a href="#site_{{s.id}}" aria-controls="site_{{s.id}}" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-globe" style="color:#3a87ad;"></span> {{s.name}}</a></li>
 		{% else %}
-    		<li role="presentation" class=""><a href="#site_{{s.id}}" aria-controls="site_{{s.id}}" role="tab" data-toggle="tab">{{s.name}}</a></li>
+    		<li role="presentation" class=""><a href="#site_{{s.id}}" aria-controls="site_{{s.id}}" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-globe" style="color:#3a87ad;"></span> {{s.name}}</a></li>
 		{% endif %}
 	{% endfor %}
 <!--
