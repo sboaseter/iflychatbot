@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 style="color:#3a87ad;"><span class="glyphicon glyphicon-globe"></span> {{ site.name if site.name != None else 'Sitename' }}</h3>
+<form action="" method="post" role="form">
+	<input type="hidden" name="id" value="{{ site.id }}">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group">
+                <div class="row">
+                    <div class="col-md-10">
+   						<label for="name" class="control-label">Name</label>
+						<input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{site.name if site.name != None}}">
+                    </div>
+                    <div class="col-md-2">
+   						<label for="name" class="control-label">RoomId</label><!-- convert into dropdown -->
+						<input type="text" class="form-control" name="ifc_room_id" placeholder="Id" value="{{site.ifc_room_id if site.ifc_room_id != None}}">
+                    </div>
+                </div>
+				<div class="row" style="padding-top: 10px;">
+					<div class="col-md-12">
+						<a href="{{ url_for('site.sites') }}" class="btn btn-warning">
+							<span class="glyphicon glyphicon-chevron-left"></span> Cancel
+						</a>
+						<button type="submit" class="btn btn-success">
+							<span class="glyphicon glyphicon-ok"></span> Save
+						</button>
+						<a href="{{ url_for('site.site_remove', id=site.id) }}" class="btn btn-small btn-danger" style="float:right;">
+							<span class="glyphicon glyphicon-remove"></span> Delete
+						</a>
+					</div>
+				</div>
+				<div class="row" style="padding-top: 10px;">
+                    <div class="col-md-12">
+   						<label for="name" class="control-label">API Key</label><!-- convert into dropdown -->
+						<input type="text" class="form-control" name="ifc_key" placeholder="iFlyChat API Key" value="{{site.ifc_key if site.ifc_key != None}}">
+                    </div>
+				</div>
+			</div><!--form group -->
+		</div><!-- col-md-6 of left side -->
+		<div class="col-md-6"><!-- col-md-6 of right side-->
+			<div class="form-group">
+                <div class="row">
+                    <div class="col-md-4">
+						<h3>Chat</h3>
+                   </div>
+                    <div class="col-md-8" style="text-align:right;">
+						<a href="#" class="btn btn-xs btn-warning">
+							<span class="glyphicon glyphicon-chevron-up"></span> opt1 
+						</a>
+						<a href="#" class="btn btn-xs btn-info">
+							<span class="glyphicon glyphicon-chevron-down"></span> opt2 
+						</a>
+					</div>
+                </div>
+				<div class="row">
+					<div class="col-md-12">
+						<table class="table table-condensed table-hover">
+							<thead>
+								<tr>
+				                    <th style="text-align:left; width:50px;">User</th>
+									<th>Msg</th>
+								</tr>
+			    	        </thead>
+            				<tbody>
+								<tr>
+									<td>
+										UserX
+									</td>
+	            			    	<td>
+										<img style="max-height:24px;" src="{{ url_for('site.static', filename='iflychat.png') }}"> Message...
+									</td>
+			            	   </tr>
+							 </tbody>
+						</table>
+					</div>
+				</div>
+            </div>
+	    </div><!-- left side col-md-6 end -->
+	</div><!-- first row end -->
+</form>
+
+<script type="text/javascript">
+      window.onload=function(){
+      $('.selectpicker').selectpicker();
+/*
+      $('.rm-mustard').click(function() {
+        $('.remove-example').find('[value=Mustard]').remove();
+        $('.remove-example').selectpicker('refresh');
+      });
+      $('.rm-ketchup').click(function() {
+        $('.remove-example').find('[value=Ketchup]').remove();
+        $('.remove-example').selectpicker('refresh');
+      });
+      $('.rm-relish').click(function() {
+        $('.remove-example').find('[value=Relish]').remove();
+        $('.remove-example').selectpicker('refresh');
+      });
+      $('.ex-disable').click(function() {
+          $('.disable-example').prop('disabled',true);
+          $('.disable-example').selectpicker('refresh');
+      });
+      $('.ex-enable').click(function() {
+          $('.disable-example').prop('disabled',false);
+          $('.disable-example').selectpicker('refresh');
+      });
+
+      // scrollYou
+      $('.scrollMe .dropdown-menu').scrollyou();
+
+      prettyPrint();
+*/
+      };
+</script>
+{% endblock %}
+

@@ -1,6 +1,54 @@
 {% extends "base.html" %}
 {% block content %}
+<h3 style="color:#3a87ad;"><span class="glyphicon glyphicon-eye-open"></span> OmniFeed</h3>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+	{% for s in all_sites %}
+		{% if loop.first %}
+    		<li role="presentation" class="active"><a href="#site_{{s.id}}" aria-controls="site_{{s.id}}" role="tab" data-toggle="tab">{{s.name}}</a></li>
+		{% else %}
+    		<li role="presentation" class=""><a href="#site_{{s.id}}" aria-controls="site_{{s.id}}" role="tab" data-toggle="tab">{{s.name}}</a></li>
+		{% endif %}
+	{% endfor %}
+<!--
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
+    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+-->
+  </ul>
 
+  <!-- Tab panes -->
+	<div class="tab-content">
+
+	{% for s in all_sites %}
+		{% if loop.first %}
+		    <div role="tabpanel" class="tab-pane active" id="site_{{s.id}}">
+		{% else %}
+		    <div role="tabpanel" class="tab-pane" id="site_{{s.id}}">
+		{% endif %}
+						<table class="table table-condensed table-hover">
+							<thead>
+								<tr>
+				                    <th style="text-align:left; width:50px;">User</th>
+									<th>Msg</th>
+								</tr>
+			    	        </thead>
+            				<tbody>
+								<tr>
+									<td>
+										User {{loop.index}}
+									</td>
+	            			    	<td>
+										<img style="max-height:24px;" src="{{ url_for('site.static', filename='iflychat.png') }}"> Message...
+									</td>
+			            	   </tr>
+							 </tbody>
+						</table>
+
+			</div>
+
+	{% endfor %}
+</div>
 
 
 {% endblock %}

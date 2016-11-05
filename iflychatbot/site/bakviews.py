@@ -5,63 +5,11 @@ from iflychatbot.models.dbmodels import *
 
 site = Blueprint('site', __name__, template_folder='templates', static_folder="/home/twitterbot/public_html/iflychatbot/iflychatbot/static")
 
-@site.route('')
-def index():
-	try:
-		all_sites = Site.query.all()
-		all_users = User.query.all()
-		all_site_users = Site_User.query.all()
-		for s in all_sites:
-			s.users = [u for u in all_users if u.id in [asu.user_id for asu in all_site_users if asu.site_id == s.id]]
-			s.available_users = [u for u in all_users if u.id not in [asu.user_id for asu in all_site_users if asu.site_id == s.id]]
-
-		return render_template('index.html', all_sites=all_sites)
-	except TemplateNotFound:
-		abort(404)
-
-@site.route('sites')
-def sites():
-	try:
-		all_sites = Site.query.all()
-		return render_template('sites.html', all_sites=all_sites)
-	except TemplateNotFound:
-		abort(404)
-
-@site.route('sites/<int:id>/', methods=['GET', 'POST'])
-def site_detail(id):
-	try:
-		# Save button
-		if request.method == 'POST':
-			# Save/Edit record
-			if request.form['id'] != None: #form as an Id
-				form_id = int(request.form['id'])
-				form_name = str(request.form['name'].encode('utf-8')).lower()
-				form_ifc_room_id = int(request.form['ifc_room_id'])
-				form_ifc_key = request.form['ifc_key'].encode('utf-8')
-				print('Site new/edit: [id: {}, name: {}, ifc_room_id: {}, ifc_key: {}]'.format(form_id, form_name, form_ifc_room_id, form_ifc_key))
-
-				if form_id == 0: #New record
-					new_site  = Site()
-					new_site.name = form_name
-					new_site.ifc_room_id = form_ifc_room_id
-					new_site.ifc_key = form_ifc_key
-					db.add(new_site)
-				else:
-					existing_site = Site.query.get(form_id)
-					existing_site.name = form_name
-					existing_site.ifc_room_id= form_ifc_room_id
-					existing_site.ifc_key = form_ifc_key
-				db.flush()
-				
-			return redirect(url_for('site.sites'))
-
-		if id == 0:
-			s = Site()
-			s.id = id
-			return render_template('site_detail.html', site=s)
+d
+			return render_template('site_detail.html', site=site)
 		
-		s = Site.query.get(id)
-		return render_template('site_detail.html', site=s)
+		site = Site.query.get(id)
+		return render_template('site_detail.html', site=site)
 
 	except TemplateNotFound:
 		abort(404)
@@ -95,7 +43,7 @@ def user_detail(id):
 			if request.form['id'] != None: #form as an Id
 				form_id = int(request.form['id'])
 				form_name = str(request.form['name'].encode('utf-8')).lower()
-				form_source_id = int(request.form['source_id'])
+				form_source_id = request.form['source_id']
 				form_active = 'active' in request.form
 				form_image = request.form['image'].encode('utf-8')
 
@@ -201,6 +149,8 @@ def source_remove(id):
 	Source.query.filter(Source.id == id).delete()
 	db.flush()
 	return redirect(url_for('site.sources'))
+	
+
 
 #simply refresh for latest!
 @site.route('feed')

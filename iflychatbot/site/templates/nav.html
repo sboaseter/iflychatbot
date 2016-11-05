@@ -26,19 +26,25 @@
                     </li>
                     <li>
                         <a href="{{ url_for('site.sites') }}">
-                            <span class="glyphicon glyphicon-globe"></span> Sites ({{ site_count }})
+                            <span class="glyphicon glyphicon-globe"></span> Sites 
                         </a>
                     </li>
                     <li>
                         <a href="{{ url_for('site.users') }}">
-                            <span class="glyphicon glyphicon-user"></span> Users ({{ user_count }})
+                            <span class="glyphicon glyphicon-user"></span> Users
                         </a>
                     </li>
                     <li>
                         <a href="{{ url_for('site.sources') }}">
-                            <span class="glyphicon glyphicon-download-alt"></span> Sources ({{ source_count }})
+                            <span class="glyphicon glyphicon-download-alt"></span> Sources
                         </a>
                     </li>
+	                <li>
+                        <a href="{{ url_for('site.feed') }}">
+                            <span class="glyphicon glyphicon-eye-open"></span> 
+                        </a>
+                    </li>
+
                 </ul>
             </div>
         </div>

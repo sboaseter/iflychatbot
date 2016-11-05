@@ -8,7 +8,7 @@ class Site(Base):
 	ifc_room_id = Column('ifc_room_id', Integer)
 	ifc_key = Column('ifc_key', String(512))
 
-	def __init__(self, name): 
+	def __init__(self): 
 		self.users = []
 		self.available_users = []
 	

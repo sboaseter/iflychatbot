@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2><span class="glyphicon glyphicon-user"></span> {{ ud.name }}</h2>
+<h3 style="color:#3a87ad;"><span class="glyphicon glyphicon-user"></span> {{ ud.name if ud.name != None else 'Username' }}</h3>
 <form action="" method="post" role="form">
 	<input type="hidden" name="id" value="{{ ud.id }}">
 	<div class="row">
@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-md-12">
    						<label for="name" class="control-label">Username</label>
-						<input type="text" class="form-control" id="name" name="name" placeholder="Twitter name" value="{{ud.name}}">
+						<input type="text" class="form-control" id="name" name="name" placeholder="iFlyChat username" value="{{ud.name if ud.name != None}}">
                     </div>
                 </div>
 				<div class="row" style="padding-top: 10px;">
@@ -31,12 +31,20 @@
    						<label for="source_id" class="control-label">Source</label><br />
 						<select name="source_id" class="selectpicker" data-style="btn-default">
 							{% for s in all_sources %}
-								<option  value="{{ s.id }}">{{s.name}}</option>
+								{% if ud.source_id == s.id %}
+									<option  value="{{ s.id }}" selected="selected">{{s.name}}</option>
+								{% else %}
+									<option  value="{{ s.id }}">{{s.name}}</option>
+								{% endif %}
 							{% endfor %}
 						</select>
 				        <div class="checkbox" style="float:right;">
 				          <label>
-				            <input type="checkbox" name="active" value="{{ ud.active }}">
+							{% if ud.active %}
+				            	<input type="checkbox" name="active" checked="checked">
+							{% else %}
+				            	<input type="checkbox" name="active">
+							{% endif %}
 				            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 							Active	            
 				          </label>
@@ -51,10 +59,14 @@
                 <div class="row">
                     <div class="col-md-8">
    						<label for="name" class="control-label">Image</label>
-						<input type="text" class="form-control" name="image" value="{{ud.image}}">
+						<input type="text" class="form-control" name="image" placeholder="URL to avatar image"  value="{{ud.image if ud.image != None}}">
                     </div>
                     <div class="col-md-4">
-                        <img class="thumbnail" src="{{ud.image}}" style="max-height:256px;" />
+						{% if ud.image != None %}
+	                        <img class="thumbnail" src="{{ud.image }}" style="max-height:256px;" />
+						{% else %}
+	                        <img class="thumbnail" src="{{ url_for('site.static', filename='none.png') }}" style="max-height:256px;" />
+						{% endif %}
                     </div>
                 </div>
 
@@ -64,6 +76,7 @@
 						<table class="table table-condensed table-hover">
 							<thead>
 								<tr>
+									<th>#</th>
 									<th>Sites</th>
 									<th style="text-align:center;"></th>
 								</tr>
@@ -71,11 +84,14 @@
 							<tbody>
 							{% for s in all_sites %}
 								<tr>
+									<td>
+										<span class="label label-info">{{loop.index}}</span>
+									</td>
 									<td><a href="{{s.name}}">{{ s.name }}</a></td>
 									<td>
 								        <div class="checkbox" style="float:right;">
 											<label>
-									            <input type="checkbox" name="active" value="{{ ud.active }}">
+									            <input type="checkbox" name="site_active" value="{{ ud.active }}">
 									            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 												Active	            
 								          </label>
@@ -91,21 +107,35 @@
 	    </div><!-- left side col-md-6 end -->
 	</div><!-- first row end -->
 	<div class="row"> <!-- messages -->
+					<div class="col-md-6 col-md-offset-6" style="text-align:right;">
+						<span class="label label-success">Message posted to site</span>
+						<span class="label label-default">Click to post message</span>
+					</div>
 					<div class="col-md-12">
 						<table class="table table-condensed table-hover">
 							<thead>
 								<tr>
 									<th><a href="http://twitter.com/{{ ud.source.name }}"><img style="max-height:24px;" src="{{ url_for('site.static', filename='twitter.png') }}"> {{ ud.source.name }}</a></th>
+									<th>Status</th>
 									<th style="text-align:center;"></th>
 								</tr>
 							</thead>
 							<tbody>
 							{% for tfs in tweets_from_source  %}
 								<tr>
-									<td>
+									<td class="col-md-9">
 										 <span class="glyphicon glyphicon-comment"></span> {{tfs.text}}
 									</td>
-									<td>{{tfs.created_at}}</td>
+									<td class="col-md-2">
+										{% for s in all_sites %}
+											{% if loop.index == 2 %}
+											<span class="label label-success">{{loop.index}}</span>
+											{% else %}
+											<a href="{{ url_for('site.users') }}"><span class="label label-default">{{loop.index}}</span></a>
+											{% endif %}
+										{% endfor %}
+									</td>
+									<td class="col-md-1">{{tfs.created_at}}</td>
 								</tr>
 							{% endfor %}
 							</tbody>

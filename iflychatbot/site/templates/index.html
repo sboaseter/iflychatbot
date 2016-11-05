@@ -17,14 +17,19 @@
                         <thead>
                             <tr>
                                 <th>Active Users</th>
+								<th>Source</th>
                                 <th style="text-align:center;"></th>
                             </tr>
                         </thead>
                         <tbody>
 						{% for u in site.users | sort(attribute='name') %}
                             <tr>
-                                <td><span class="glyphicon glyphicon-user" style="color:#3a87ad;"></span> {{ u.name }} [{{ u.source_name }}]</td>
-                                <td><a href="#">Remove</a></td>
+                                <td><span class="glyphicon glyphicon-user" style="color:#3a87ad;"></span> {{ u.name }}</td>
+								<td><img style="max-height:24px;" src="static/twitter.png">{{ u.source_name }}</td>
+                                <td style="text-align:right;">
+							<a href="#" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-arrow-down"></a>
+
+</td>
                             </tr>
 						{% endfor %}
                         </tbody>
@@ -44,8 +49,11 @@
 						{% for u in site.available_users | sort(attribute='name') %}
                             <tr>
                                 <td><span class="glyphicon glyphicon-user" style="color:#3a87ad;"></span> {{ u.name }}</td>
+                                <td style="text-align:right;">
+							<a href="#" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-arrow-up"></a>
 
-                                <td><a href="#">Add</a></td>
+</td>
+
                             </tr>
 						{% endfor %}
                     </tbody>
