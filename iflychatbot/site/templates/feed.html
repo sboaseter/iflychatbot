@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 <h3 style="color:#3a87ad;"><span class="glyphicon glyphicon-eye-open"></span> OmniFeed</h3>
+<div class="row">
+<div class="col-md-12">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
 	{% for s in all_sites %}
@@ -17,7 +19,10 @@
     <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
 -->
   </ul>
-
+</div>
+</div>
+<div class="row">
+<div class="col-md-12">
   <!-- Tab panes -->
 	<div class="tab-content">
 
@@ -27,6 +32,10 @@
 		{% else %}
 		    <div role="tabpanel" class="tab-pane" id="site_{{s.id}}">
 		{% endif %}
+<!-- Deprechated -->
+{#
+			<div class="row">
+				<div clas="col-md-10">
 						<table class="table table-condensed table-hover">
 							<thead>
 								<tr>
@@ -45,11 +54,111 @@
 			            	   </tr>
 							 </tbody>
 						</table>
+				</div>
+			</div>
+#}
+<!-- /Deprechated -->
+			<hr />
+			<!-- Chat -->
+			<div class="row">
+			<div class="col-md-12" style="height: 500px;overflow-y: scroll;" id="chat_{{s.id}}">
+{#
+			{% for x in range(10) %}
+			<div class="row">
+				<div class="col-md-2">
+					<img style="max-height:24px;" src="{{ url_for('site.static', filename='iflychat.png') }}"> User 
+				</div>
+				<div class="col-md-8">
+					 Message...
+				</div>
+				<div class="col-md-2">
+					<span class="label label-success"> Options</span>
+				</div>
+			</div>
+			{% endfor %}
+#}
+			</div>
+			</div>
+			<!-- /Chat -->
+			<hr />	
+			<div class="row">
+				<div class="col-md-2">
+					<div class="form-group">
+						<select name="source_id" class="selectpicker" data-style="btn-default" data-width="100%" data-icon="glyphicon-user">
+							{% for s in all_users %}
+{#
+								{% if ud.source_id == s.id %}
+									<option  value="{{ s.id }}" selected="selected">{{s.name}}</option>
+								{% else %}
+									<option  value="{{ s.id }}">{{s.name}}</option>
+								{% endif %}
+#}
+								<option  value="{{ s.id }}">{{s.name}}</option>
+							{% endfor %}
+						</select>
+					</div>
+
+				</div>
+				<div class="col-md-8">
+					<div class="form-group">
+						<input type="text" class="form-control" name="msg" placeholder="Enter message ... ">
+					</div>
+				</div>
+				<div class="col-md-2">
+					<a href="#" class="btn btn-info">
+						<span class="glyphicon glyphicon-send"></span>
+					</a>
+				</div>
+			</div>
 
 			</div>
 
 	{% endfor %}
 </div>
+</div>
+</div>
+<script type="text/javascript">
+	window.onload=function(){
+	$('.selectpicker').selectpicker();
+	var out = document.getElementById("chat_1");
+var add = setInterval(function() {
+    // allow 1px inaccuracy by adding 1
+	getTweet()
+}, 1000);
+};
+
+function getTweet() {
+         $.ajax({ 
+             type: "GET",
+             dataType: "json",
+             url: "http://192.169.141.201/iflychatbot/api/",
+			 async: true,
+             success: function(data){     
+				var out = document.getElementById("chat_1");
+				var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
+//				var newElement = document.createElement("div");
+				var newElementHTML = "\
+				<div class=\"row\">\
+				<div class=\"col-md-2\">\
+					<img style=\"max-height:24px;\" src=\"{{ url_for('site.static', filename='twitter.png') }}\"> " + data.name + " \
+				</div>\
+				<div class=\"col-md-8\">\
+					 " + data.text + " \
+				</div>\
+				<div class=\"col-md-2\">\
+					<span class=\"label label-success\"> Options</span>\
+				</div>\
+				</div>";
+
+//				newElement.innerHTML = data.text;
+				/* if count of appends > 500 ... delete from top */
+				$("#chat_1").append(newElementHTML);
+				if(isScrolledToBottom)
+					out.scrollTop = out.scrollHeight - out.clientHeight;  
+             }
+         });
+}
+</script>
 
 
 {% endblock %}

@@ -207,6 +207,7 @@ def source_remove(id):
 def feed():
 	try:
 		all_sites = Site.query.all()
-		return render_template('feed.html', all_sites=all_sites)
+		all_users = User.query.all()
+		return render_template('feed.html', all_sites=all_sites, all_users=all_users)
 	except TemplateNotFound:
 		abort(404)
