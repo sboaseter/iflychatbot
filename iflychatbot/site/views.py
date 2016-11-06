@@ -98,12 +98,14 @@ def user_detail(id):
 				form_source_id = int(request.form['source_id'])
 				form_active = 'active' in request.form
 				form_image = request.form['image'].encode('utf-8')
+				selected_source = Source.query.get(form_source_id)
 
 				if form_id == 0: #New record
 					print('New user')
 					new_user = User()
 					new_user.name = form_name
 					new_user.source_id = form_source_id
+					new_user.source_name = selected_source.name
 					new_user.active = form_active
 					new_user.image = form_image
 					db.add(new_user)
@@ -112,6 +114,7 @@ def user_detail(id):
 					existing_user = User.query.get(form_id)
 					existing_user.name = form_name
 					existing_user.source_id = form_source_id
+					existing_user.source_name = selected_source.name
 					existing_user.active = form_active
 					existing_user.image = form_image
 					db.flush()
@@ -128,10 +131,16 @@ def user_detail(id):
 		s = Source.query.all()
 		u = User.query.get(id)
 		all_sites = Site.query.all()
-		u.source = next(ms for ms in s if ms.id == u.source_id)	
-		my_source_id_str  = next(ms.id_str for ms in s if ms.id == u.source_id)
+		try:
+			u.source = next(ms for ms in s if ms.id == u.source_id)	
+			my_source_id_str  = next(ms.id_str for ms in s if ms.id == u.source_id)
 
-		tweets_from_source = Source_Tweet.query.filter(Source_Tweet.id_str == my_source_id_str).order_by(Source_Tweet.id.desc()).limit(25) 
+			tweets_from_source = Source_Tweet.query.filter(Source_Tweet.id_str == my_source_id_str).order_by(Source_Tweet.id.desc()).limit(25) 
+		except Exception,e:
+			print('Error fetching source for user')
+			u.source = Source()
+			tweets_from_source = []
+			pass
 		return render_template('user_detail.html', ud=u, all_sources=s, all_sites=all_sites, tweets_from_source=tweets_from_source)
 
 	except TemplateNotFound:
@@ -210,4 +219,22 @@ def feed():
 		all_users = User.query.all()
 		return render_template('feed.html', all_sites=all_sites, all_users=all_users)
 	except TemplateNotFound:
+		abort(404)
+
+#add/remove site-user record, binary swap
+@site.route('siteuser/<int:site_id>/<int:user_id>/')
+def siteuser(site_id, user_id):
+	try:
+		su = Site_User.query.filter(Site_User.site_id == site_id, Site_User.user_id == user_id)
+		if su.count() == 0: #Add
+			new_su = Site_User()
+			new_su.site_id = site_id
+			new_su.user_id = user_id
+			db.add(new_su)
+		else: # Remove
+			su.delete()
+		db.flush()
+		return redirect(url_for('site.index'))
+	except Exception, e:
+		print('siteuser error: ' + str(e))
 		abort(404)

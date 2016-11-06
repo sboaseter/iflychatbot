@@ -16,10 +16,9 @@ def index():
 
 @api.route('/test/', methods=['GET', 'POST'])
 def test():
-	publishUrl = "https://api.iflychat.com/api/1.1/room/3/publish"
+	publishUrl = "https://api.iflychat.com/api/1.1/room/{}/publish"
 	api_key = "Ff3bAAZyGtK09tos5ZfXZLEvRy_60nkFsVMhy79vvykW6831"
 	uid = 42
-	name = "Py"
 	picture_url = ""
 	profile_url = "javascript:void(0)"
 	message = str(id)
@@ -30,7 +29,8 @@ def test():
 		print(request.json)
 		name = request.json['username']
 		message = request.json['message']
-	r = requests.post(publishUrl, data = {'api_key':api_key, 'uid':uid, 'name':name, 'picture_url':picture_url,'profile_url':profile_url,'message':message,'color':color,'roles':roles})
+		room_id = request.json['room_id']
+	r = requests.post(publishUrl.format(room_id), data = {'api_key':api_key, 'uid':uid, 'name':name, 'picture_url':picture_url,'profile_url':profile_url,'message':message,'color':color,'roles':roles})
 	if r.ok == True:
 		return 'Success'
 	else:
@@ -45,7 +45,7 @@ def ifc_chat():
 			ifc_messages = IFC_Message.query.order_by(IFC_Message.id.desc()).limit(limit)
 		else:
 			ifc_messages = IFC_Message.query.filter(IFC_Message.id > latest_id).limit(limit)
-		ifc_msg_dict = [{'id':ifc.id, 'name':ifc.from_name, 'text':ifc.message} for ifc in ifc_messages.all()]
+		ifc_msg_dict = [{'id':ifc.id, 'name':ifc.from_name, 'text':ifc.message, 'room_id':ifc.room_id} for ifc in ifc_messages.all()]
 		ifc_msg_dict.reverse()
 		return jsonify(ifc_msg_dict)
 	return 'POST only'

@@ -27,7 +27,7 @@
                                 <td><span class="glyphicon glyphicon-user" style="color:#3a87ad;"></span> {{ u.name }}</td>
 								<td><img style="max-height:24px;" src="static/twitter.png">{{ u.source_name }}</td>
                                 <td style="text-align:right;">
-							<a href="#" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-arrow-down"></a>
+							<a href="{{ url_for('site.siteuser', site_id=site.id, user_id=u.id )}}" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-arrow-down"></a>
 
 </td>
                             </tr>
@@ -50,7 +50,7 @@
                             <tr>
                                 <td><span class="glyphicon glyphicon-user" style="color:#3a87ad;"></span> {{ u.name }}</td>
                                 <td style="text-align:right;">
-							<a href="#" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-arrow-up"></a>
+							<a href="{{ url_for('site.siteuser', site_id=site.id, user_id=u.id )}}" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-arrow-up"></a>
 
 </td>
 

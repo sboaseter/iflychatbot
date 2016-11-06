@@ -4,13 +4,13 @@
 <div class="row">
 <div class="col-md-12">
   <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-	{% for s in all_sites %}
+  <ul class="nav nav-tabs" role="tablist" id="sites_tab">
+	{% for s in all_sites | reverse %}
 		{% if loop.first %}
-    		<li role="presentation" class="active">
+    		<li role="presentation" class="active" data-id="{{s.ifc_room_id}}">
 				<a href="#site_{{s.id}}" aria-controls="site_{{s.id}}" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-globe" style="color:#3a87ad;"></span> {{s.name}}</a></li>
 		{% else %}
-    		<li role="presentation" class=""><a href="#site_{{s.id}}" aria-controls="site_{{s.id}}" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-globe" style="color:#3a87ad;"></span> {{s.name}}</a></li>
+    		<li role="presentation" class="" data-id="{{s.ifc_room_id}}"><a href="#site_{{s.id}}" aria-controls="site_{{s.id}}" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-globe" style="color:#3a87ad;"></span> {{s.name}}</a></li>
 		{% endif %}
 	{% endfor %}
 <!--
@@ -26,7 +26,7 @@
   <!-- Tab panes -->
 	<div class="tab-content">
 
-	{% for s in all_sites %}
+	{% for s in all_sites | reverse %}
 		{% if loop.first %}
 		    <div role="tabpanel" class="tab-pane active" id="site_{{s.id}}">
 		{% else %}
@@ -121,7 +121,7 @@
 	var _latest_id = -1;
 	window.onload=function(){
 		$('.selectpicker').selectpicker();
-		var out = document.getElementById("chat_1");
+//		var out = document.getElementById("chat_1");
 		getIFCChat()
 		var add = setInterval(function() {
 		    // allow 1px inaccuracy by adding 1
@@ -140,7 +140,8 @@
 function postMessage() {
 	var username = $('.selectpicker option:selected').html();
 	var message = $("#msg").val();
-	var data = { username, message };
+	var room_id = $("ul#sites_tab li.active").data('id');
+	var data = { username, message, room_id };
  $.ajax({
     type : "POST",
     url : "http://192.169.141.201/iflychatbot/api/test/",
@@ -152,6 +153,12 @@ function postMessage() {
 	}
 })
 }
+
+{% for x in range(3) %}
+function func_{{x}}() {
+	console.log({{x}});
+}
+{% endfor %}
 
 function getIFCChat() {
 		var latest_id = _latest_id;
@@ -165,14 +172,15 @@ function getIFCChat() {
 				if(data.length == 0) return;
 				_latest_id = data[data.length-1].id;
 
-				var out = document.getElementById("chat_1");
-				var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
 			
 				for(var i=0;i<data.length;i++) {	
+					var out = document.getElementById("chat_"+data[i].room_id);
+					var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
+
 					var newElementHTML = "\
 					<div class=\"row\">\
 					<div class=\"col-md-2\">\
-						<img style=\"max-height:24px;\" src=\"{{ url_for('site.static', filename='twitter.png') }}\"> " + data[i].name + " \
+						<img style=\"max-height:24px;\" src=\"{{ url_for('site.static', filename='iflychat.png') }}\"> " + data[i].name + " \
 					</div>\
 					<div class=\"col-md-8\">\
 						 " + data[i].text + " \
@@ -183,10 +191,11 @@ function getIFCChat() {
 					</div>";
 
 					/* if count of appends > 500 ... delete from top */
-					$("#chat_1").append(newElementHTML);
+					$("#chat_"+data[i].room_id).append(newElementHTML);
+					if(isScrolledToBottom)
+						out.scrollTop = out.scrollHeight - out.clientHeight;  
+
 				}
-				if(isScrolledToBottom)
-					out.scrollTop = out.scrollHeight - out.clientHeight;  
              }
          });
 
