@@ -85,6 +85,12 @@ class TwitterSphere(StreamListener):
 			response = requests.post(api_url, json=payload)
 
 			tweet_color = Fore.GREEN
+			print('[{}] [Local: {}] User: {}\n\t{}\n'.format(datetime.now().strftime('%H:%M:%S'),
+													created_at,
+													Fore.CYAN+ username + Fore.RESET, 
+													tweet_color + tweet + Fore.RESET))
+
+
 #			username = '_screen_name_' + username
 #			matched_source = [s.id for s in sources if s.name.lower() == username]
 #			if len(matched_source) > 0:
@@ -107,10 +113,6 @@ class TwitterSphere(StreamListener):
 		db.flush()
 		
 #
-		print('[{}] [Local: {}] User: {}\n\t{}\n'.format(datetime.now().strftime('%H:%M:%S'),
-													created_at,
-													Fore.CYAN+ username + Fore.RESET, 
-													tweet_color + tweet + Fore.RESET))
 		return True
 
 	def on_error(self, status):
@@ -199,6 +201,48 @@ class TwitterSphereConfig:
 		twitter_screen_names = [s.name.lower() for s in self.sources if s.id_str != None]
 
 
+
+class IFlyReader:
+	def __init__(self):
+		print('IFlyReader...')
+		#todo db-config
+		self.api_url = "https://api.iflychat.com/api/1.1/threads/get"
+		self.api_key = "Ff3bAAZyGtK09tos5ZfXZLEvRy_60nkFsVMhy79vvykW6831"
+		self.room_ids = ['2','3','4','6']
+		#start_timestamp = ms
+		#end_timestamp = ms
+		self.limit = "100"
+
+	def run(self):
+		while running:
+			r = requests.post(self.api_url, data = { 'api_key': self.api_key, 'room_id': self.room_ids, 'limit': self.limit })
+			self.limit = 5
+			#print(dir(r))
+			#print(r.json())
+			if r.ok == True:
+			    c = 0
+			    for j in r.json():
+			        exists = IFC_Message.query.filter(IFC_Message.message_id == j['message_id'])
+			        if exists.count() != 0:
+#			            print(str(c) + ': Message allready entered')
+			            c = c + 1
+			            continue
+			        m = IFC_Message()
+			        m.room_id = str(j['room_id']).encode('utf-8')
+			        m.from_id = str(j['from_id']).encode('utf-8')
+			        m.from_name = str(j['from_name']).encode('utf-8')
+			        m.picture_url = str(j['picture_url']).encode('utf-8')
+			        m.profile_url = str(j['profile_url']).encode('utf-8')
+			        m.message_id = str(j['message_id']).encode('utf-8')
+			        m.message = j['message'].encode('utf-8')
+			        m.posted = True
+			        m.created_on = str(j['time']).encode('utf-8')
+			        db.add(m)
+			        db.flush()
+			        print(m)
+			
+			time.sleep(10)
+
 def tstream_cleanup():
 	print('Performing cleanup...')
 
@@ -208,12 +252,15 @@ if __name__ == '__main__':
 
 	tsc = TwitterSphereConfig()
 	ts = TwitterSphere()
+	ifr = IFlyReader()
 
 	tsc_t = threading.Thread(target=tsc.run, args=())
 	ts_t = threading.Thread(target=ts.run, args=())
+	ifr_t = threading.Thread(target=ifr.run, args=())
 
 	tsc_t.start()
 	ts_t.start()
+	ifr_t.start()
 
 	atexit.register(tstream_cleanup)
 	

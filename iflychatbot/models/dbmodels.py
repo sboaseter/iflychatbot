@@ -90,4 +90,30 @@ class Reader(Base):
 		return "Reader: {}\n\tId: {}\n\tPassword: {}\n\tCredentials: {}"\
 		.format(self.name, self.id, self.password, self.credentials)
 
+class IFC_Message(Base):
+	__tablename__ = 'ifc_message'
+	id = Column('id', Integer, primary_key=True)
+
+	site_id = Column('site_id', Integer)
+	user_id = Column('user_id', Integer)
+	source_tweet_id = Column('source_tweet_id', Integer)
+
+	room_id = Column('room_id', String(16))
+	from_id = Column('from_id', String(32))
+	from_name = Column('from_name', String(64))
+	picture_url = Column('picture_url', String(2048))
+	profile_url = Column('profile_url', String(256))
+	message_id = Column('message_id', String(512))
+	message = Column('message', String(1024))
+	
+	posted = Column('posted', Integer)
+	created_on = Column('created_on', String(128))
+
+	def __init__(self): pass
+
+	def __repr__(self):
+		return "RoomId: {}\n\tName: {}\n\tMessage: {}\n\tPosted: {}"\
+		.format(self.room_id.encode('utf-8'), self.from_name.encode('utf-8'), self.message.encode('utf-8'), self.posted)
+
+
 

@@ -84,7 +84,7 @@
 			<div class="row">
 				<div class="col-md-2">
 					<div class="form-group">
-						<select name="source_id" class="selectpicker" data-style="btn-default" data-width="100%" data-icon="glyphicon-user">
+						<select id="user" name="source_id" class="selectpicker" data-style="btn-default" data-width="100%" data-icon="glyphicon-user">
 							{% for s in all_users %}
 {#
 								{% if ud.source_id == s.id %}
@@ -101,11 +101,11 @@
 				</div>
 				<div class="col-md-8">
 					<div class="form-group">
-						<input type="text" class="form-control" name="msg" placeholder="Enter message ... ">
+						<input type="text" class="form-control" id="msg" name="msg" placeholder="Enter message ... ">
 					</div>
 				</div>
 				<div class="col-md-2">
-					<a href="#" class="btn btn-info">
+					<a href="#" class="btn btn-info" id="btnMsg">
 						<span class="glyphicon glyphicon-send"></span>
 					</a>
 				</div>
@@ -118,14 +118,79 @@
 </div>
 </div>
 <script type="text/javascript">
+	var _latest_id = -1;
 	window.onload=function(){
-	$('.selectpicker').selectpicker();
-	var out = document.getElementById("chat_1");
-var add = setInterval(function() {
-    // allow 1px inaccuracy by adding 1
-	getTweet()
-}, 1000);
+		$('.selectpicker').selectpicker();
+		var out = document.getElementById("chat_1");
+		getIFCChat()
+		var add = setInterval(function() {
+		    // allow 1px inaccuracy by adding 1
+//			getTweet()
+			getIFCChat()
+		}, 10000);
+		$("#btnMsg").on('click', function() {
+			var message = $("#msg").val();
+			var username = $('.selectpicker option:selected').html();
+			postMessage();
+
+			console.log('clicked');
+		});
 };
+
+function postMessage() {
+	var username = $('.selectpicker option:selected').html();
+	var message = $("#msg").val();
+	var data = { username, message };
+ $.ajax({
+    type : "POST",
+    url : "http://192.169.141.201/iflychatbot/api/test/",
+    data: JSON.stringify(data, null, '\t'),
+    contentType: 'application/json;charset=UTF-8',
+    success: function(result) {
+        console.log(result);
+
+	}
+})
+}
+
+function getIFCChat() {
+		var latest_id = _latest_id;
+		var data = { latest_id };
+         $.ajax({ 
+             type: "POST",
+             url: "http://192.169.141.201/iflychatbot/api/ifc_chat/",
+			 data: JSON.stringify(data, null, '\t'), 
+    		 contentType: 'application/json;charset=UTF-8',
+             success: function(data){     
+				if(data.length == 0) return;
+				_latest_id = data[data.length-1].id;
+
+				var out = document.getElementById("chat_1");
+				var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
+			
+				for(var i=0;i<data.length;i++) {	
+					var newElementHTML = "\
+					<div class=\"row\">\
+					<div class=\"col-md-2\">\
+						<img style=\"max-height:24px;\" src=\"{{ url_for('site.static', filename='twitter.png') }}\"> " + data[i].name + " \
+					</div>\
+					<div class=\"col-md-8\">\
+						 " + data[i].text + " \
+					</div>\
+					<div class=\"col-md-2\">\
+						<span class=\"label label-success\"> Options</span>\
+					</div>\
+					</div>";
+
+					/* if count of appends > 500 ... delete from top */
+					$("#chat_1").append(newElementHTML);
+				}
+				if(isScrolledToBottom)
+					out.scrollTop = out.scrollHeight - out.clientHeight;  
+             }
+         });
+
+}
 
 function getTweet() {
          $.ajax({ 
