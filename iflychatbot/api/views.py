@@ -14,6 +14,15 @@ def index():
 	return jsonify(name=tweet[0].screen_name, text=tweet[0].text)
 #	return '{"result": "42"}'
 
+@api.route('/newmsg/<int:id>/')
+def newmsg(id):
+	print('New message notification: {}'.format(str(id)))
+	msg = IFC_Message.query.get(id)
+	print(msg)
+	return 'Success'
+
+#def _postMsg(
+
 @api.route('/test/', methods=['GET', 'POST'])
 def test():
 	publishUrl = "https://api.iflychat.com/api/1.1/room/{}/publish"
@@ -41,6 +50,7 @@ def ifc_chat():
 	if request.method == 'POST':
 		limit = 25
 		latest_id = int(request.json['latest_id'])
+		#causes one chat room to be populated heavily and the others not.... fix
 		if latest_id == -1:
 			ifc_messages = IFC_Message.query.order_by(IFC_Message.id.desc()).limit(limit)
 		else:

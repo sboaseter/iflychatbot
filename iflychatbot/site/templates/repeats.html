@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 style="color:#3a87ad;"><span class="glyphicon glyphicon-refresh"></span> Repeats</h3>
+<div class="row">
+	<div class="col-md-12">
+		<a href="{{ url_for('site.repeat_detail', id=0) }}" class="btn btn-xs btn-info" style="float:right;"><span class="glyphicon glyphicon-plus"></a>
+		<table class="table table-condensed table-hover">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th style="text-align:center;">Site</th>
+					<th style="text-align:center;">Status</th>
+					<th>Message</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for s in all_repeats %}
+					{% set toggle_url = url_for('site.repeat_toggle', id=s.id) %}
+					<tr>
+						<td>
+							<img style="max-height:24px;" src="{{s.picture_url}}"> {{ s.from_name}} <br />
+							<span style="font-style: italic; font-size: 85%;;">{{ s.site_name if s.site_name != '' else 'Missing' }} 
+						</td>
+
+						
+						{% if s.status == 'active' %}
+                            <td><a href="{{ toggle_url }}"<span class="label label-success">Y</span></a></td>
+						{% else %}
+                            <td><a href="{{ toggle_url }}"><span class="label label-default">N</span></a></td>
+						{% endif %}
+
+						<td> {{ s.message }}</td>
+						<td><a href="{{ url_for('site.repeat_delete', id=s.id) }}" class="btn btn-xs btn-danger" style="float:right;"><span class="glyphicon glyphicon-trash"></a>
+ 						<td style="text-align:right;">
+							<a href="{{ url_for('site.repeat_detail', id=s.id) }}" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-edit"></a>
+						</td>
+
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}

@@ -19,6 +19,96 @@ def index():
 	except TemplateNotFound:
 		abort(404)
 
+@site.route('repeats')
+def repeats():
+	try:
+		all_repeats = IFC_Message.query.filter(IFC_Message.type == 'repeat')
+		all_sites = Site.query.all()
+		for ar in all_repeats:
+			ar.site_name = (s.name for s in all_sites if s.ifc_room_id == int(ar.room_id)).next()
+		return render_template('repeats.html', all_repeats=all_repeats)
+	except TemplateNotFound:
+		abort(404)
+
+@site.route('repeat_toggle/<int:id>/')
+def repeat_toggle(id):
+	try:
+		repeat_message = IFC_Message.query.get(id)
+		repeat_message.status = '' if repeat_message.status == 'active' else 'active'
+		db.flush()
+		return redirect(url_for('site.repeats'))
+	except TemplateNotFound:
+		abort(404)
+
+@site.route('repeats/<int:id>/', methods=['GET', 'POST'])
+def repeat_detail(id):
+	try:
+		# Save button
+		if request.method == 'POST':
+			# Save/Edit record
+			print('post')
+			if request.form['id'] != None: #form as an Id
+				try:
+						print('id not none')
+						form_id = int(request.form['id'])
+						form_site_id = int(request.form['site_id'])
+						form_from_name = request.form['from_name'].encode('utf-8')
+						form_picture_url = request.form['picture_url'].encode('utf-8')
+						form_message = request.form['message'].encode('utf-8')
+						form_status = 'status' in request.form
+
+						site = Site.query.get(form_site_id)
+						if form_id == 0: #New record
+							print('id 0')
+							new_ifc_message  = IFC_Message()
+							new_ifc_message.site_id = form_site_id
+							new_ifc_message.room_id = str(site.ifc_room_id)
+							new_ifc_message.from_name = form_from_name
+							new_ifc_message.picture_url = form_picture_url
+							new_ifc_message.message = form_message
+							new_ifc_message.status = 'active' if form_status else ''
+							new_ifc_message.type = 'repeat'
+							db.add(new_ifc_message)
+						else:
+							print('id not 0')
+							new_ifc_message  = IFC_Message.query.get(form_id)
+							new_ifc_message.site_id = form_site_id
+							new_ifc_message.room_id = str(site.ifc_room_id)
+							new_ifc_message.from_name = form_from_name
+							new_ifc_message.picture_url = form_picture_url
+							new_ifc_message.message = form_message
+							new_ifc_message.status = 'active' if form_status else ''
+							new_ifc_message.type = 'repeat'
+						db.flush()
+				except Exception,e:
+					print('bad req:' + str(e))
+					pass
+
+				
+			return redirect(url_for('site.repeats'))
+
+		if id == 0:
+			s = IFC_Message()
+			s.id = id
+			all_sites = Site.query.all()
+			return render_template('repeat_detail.html', msg=s, all_sites=all_sites)
+		
+		s = IFC_Message.query.get(id)
+		all_sites = Site.query.all()
+		return render_template('repeat_detail.html', msg=s, all_sites=all_sites)
+
+	except TemplateNotFound:
+		abort(404)
+
+@site.route('repeat_delete/<int:id>/')
+def repeat_delete(id):
+	try:
+		IFC_Message.query.filter(IFC_Message.id == id).delete()
+		db.flush()
+		return redirect(url_for('site.repeats'))
+	except TemplateNotFound:
+		abort(404)
+
 @site.route('sites')
 def sites():
 	try:
@@ -81,7 +171,7 @@ def users():
 	try:
 		all_users = User.query.all()
 		all_sources = Source.query.all()
-		print(all_users)
+		#print(all_users)
 		return render_template('users.html', all_users=all_users, all_sources=all_sources)
 	except TemplateNotFound:
 		abort(404)

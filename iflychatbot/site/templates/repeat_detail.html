@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 style="color:#3a87ad;"><span class="glyphicon glyphicon-refresh"></span> {{ msg.from_name if msg.from_name != None else 'Username' }}</h3>
+<form action="" method="post" role="form">
+	<input type="hidden" name="id" value="{{ msg.id }}">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group">
+                <div class="row">
+                    <div class="col-md-4">
+   						<label for="name" class="control-label">Name</label>
+						<input type="text" class="form-control" id="name" name="from_name" placeholder="Name" value="{{msg.from_name if msg.from_name != None}}">
+                    </div>
+                    <div class="col-md-8">
+   						<label for="site_id" class="control-label">Site</label><br />
+						<select name="site_id" class="selectpicker" data-style="btn-default">
+							{% for s in all_sites %}
+								{% if msg.site_id == s.id %}
+									<option  value="{{ s.id }}" selected="selected">{{s.name}}</option>
+								{% else %}
+									<option  value="{{ s.id }}">{{s.name}}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
+                    </div>
+                </div>
+				<div class="row" style="padding-top: 10px;">
+					<div class="col-md-12">
+						<a href="{{ url_for('site.repeats') }}" class="btn btn-warning">
+							<span class="glyphicon glyphicon-chevron-left"></span> Cancel
+						</a>
+						<button type="submit" class="btn btn-success">
+							<span class="glyphicon glyphicon-ok"></span> Save
+						</button>
+				        <div class="checkbox" style="float:right;">
+				          <label>
+							{% if msg.status == 'active' %}
+				            	<input type="checkbox" name="status" checked="checked">
+							{% else %}
+				            	<input type="checkbox" name="status">
+							{% endif %}
+				            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+							Active	            
+				          </label>
+				        </div>
+					</div>
+				</div>
+				<div class="row" style="padding-top: 10px;">
+                    <div class="col-md-12">
+   						<label for="picture_url" class="control-label">Picture Url</label><!-- convert into dropdown -->
+						<input type="text" class="form-control" name="picture_url" placeholder="Picture url" value="{{msg.picture_url if msg.picture_url != None}}">
+                    </div>
+				</div>
+				<div class="row" style="padding-top: 10px;">
+                    <div class="col-md-12">
+   						<label for="message" class="control-label">Message</label><!-- convert into dropdown -->
+						<input type="text" class="form-control" name="message" placeholder="Message" value="{{msg.message if msg.message != None}}">
+                    </div>
+				</div>
+
+			</div><!--form group -->
+		</div><!-- col-md-6 of left side -->
+	</div><!-- first row end -->
+</form>
+
+<script type="text/javascript">
+      window.onload=function(){
+      $('.selectpicker').selectpicker();
+/*
+      $('.rm-mustard').click(function() {
+        $('.remove-example').find('[value=Mustard]').remove();
+        $('.remove-example').selectpicker('refresh');
+      });
+      $('.rm-ketchup').click(function() {
+        $('.remove-example').find('[value=Ketchup]').remove();
+        $('.remove-example').selectpicker('refresh');
+      });
+      $('.rm-relish').click(function() {
+        $('.remove-example').find('[value=Relish]').remove();
+        $('.remove-example').selectpicker('refresh');
+      });
+      $('.ex-disable').click(function() {
+          $('.disable-example').prop('disabled',true);
+          $('.disable-example').selectpicker('refresh');
+      });
+      $('.ex-enable').click(function() {
+          $('.disable-example').prop('disabled',false);
+          $('.disable-example').selectpicker('refresh');
+      });
+
+      // scrollYou
+      $('.scrollMe .dropdown-menu').scrollyou();
+
+      prettyPrint();
+*/
+      };
+</script>
+{% endblock %}
+

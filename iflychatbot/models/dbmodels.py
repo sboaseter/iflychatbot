@@ -73,8 +73,8 @@ class Source_Tweet(Base):
 	def __init__(self): pass
 
 	def __repr__(self):
-		return "{} [ {}: text: {} ]"\
-		.format(self.screen_name, self.created_at, self.text.encode('utf-8'))
+		return "{}: {} [ {}: text: {} ]"\
+		.format(self.id, self.screen_name, self.created_at, self.text.encode('utf-8'))
 
 
 class Reader(Base):
@@ -107,12 +107,17 @@ class IFC_Message(Base):
 	message = Column('message', String(1024))
 	
 	posted = Column('posted', Integer)
+	type = Column('type', String(32))
+	status = Column('status', String(32))
+	timer = Column('timer', Integer)
+
 	created_on = Column('created_on', String(128))
 
-	def __init__(self): pass
+	def __init__(self): 
+		self.site_name = ''
 
 	def __repr__(self):
-		return "RoomId: {}\n\tName: {}\n\tMessage: {}\n\tPosted: {}"\
+		return "RoomId: {}\nName: {}\nMessage: {}\nPosted: {}\n---"\
 		.format(self.room_id.encode('utf-8'), self.from_name.encode('utf-8'), self.message.encode('utf-8'), self.posted)
 
 

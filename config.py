@@ -6,7 +6,7 @@ class Config(object):
 #	EXPLAIN_TEMPLATE_LOADING =  True
 
 class ProductionConfig(Config):
-	print 'ProductionConfig loaded\n'
+#	print 'ProductionConfig loaded\n'
 	SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://twitterbot:stacked!123@localhost/iflychatbot'
 
 
@@ -14,8 +14,8 @@ class DevelopmentConfig(Config):
 	DEBUG = True
 	SQLALCHEMY_DATABASE_URI = ''
 
-class StandaloneConfig(Config):
-	print 'StandaloneConfig loaded\n'
+#class StandaloneConfig(Config):
+#	print 'StandaloneConfig loaded\n'
 	
 
 
