@@ -48,7 +48,7 @@ def test():
 @api.route('/ifc_chat/', methods=['GET', 'POST'])
 def ifc_chat():
 	if request.method == 'POST':
-		limit = 25
+		limit = 50
 		latest_id = int(request.json['latest_id'])
 		#causes one chat room to be populated heavily and the others not.... fix
 		if latest_id == -1:

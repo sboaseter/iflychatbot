@@ -108,16 +108,17 @@
 	    </div><!-- left side col-md-6 end -->
 	</div><!-- first row end -->
 	<div class="row"> <!-- messages -->
-					<div class="col-md-6 col-md-offset-6" style="text-align:right;">
+{#					<div class="col-md-6 col-md-offset-6" style="text-align:right;">
 						<span class="label label-success">Message posted to site</span>
 						<span class="label label-default">Click to post message</span>
 					</div>
+#}
 					<div class="col-md-12">
 						<table class="table table-condensed table-hover">
 							<thead>
 								<tr>
 									<th><a href="http://twitter.com/{{ ud.source.name }}"><img style="max-height:24px;" src="{{ url_for('site.static', filename='twitter.png') }}"> {{ ud.source.name }}</a></th>
-									<th>Status</th>
+<!--									<th>Status</th> -->
 									<th style="text-align:center;"></th>
 								</tr>
 							</thead>
@@ -127,7 +128,7 @@
 									<td class="col-md-9">
 										 <span class="glyphicon glyphicon-comment"></span> {{tfs.text}}
 									</td>
-									<td class="col-md-2">
+{#									<td class="col-md-2">
 										{% for s in all_sites %}
 											{% if loop.index == 2 %}
 											<span class="label label-success">{{loop.index}}</span>
@@ -136,6 +137,7 @@
 											{% endif %}
 										{% endfor %}
 									</td>
+#}
 									<td class="col-md-1">{{tfs.created_at}}</td>
 								</tr>
 							{% endfor %}

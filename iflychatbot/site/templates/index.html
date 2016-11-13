@@ -9,7 +9,7 @@
 		{% for site in all_sites %}
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h3 class="panel-title"><span class="glyphicon glyphicon-globe"></span> {{ site.name }}</h3>
+                <h3 class="panel-title"><span class="glyphicon glyphicon-globe"></span> {{ site.name }} <span style="float:right;"><span class="glyphicon glyphicon-user" style="color:#3a87ad;"></span> {{ site.users | length}}</span></h3>
             </div>
             <div class="panel-body">
 				{% if site.users | length > 0 %}

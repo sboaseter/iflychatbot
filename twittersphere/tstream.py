@@ -259,6 +259,20 @@ class IFlyPoster:
 		try:
 			if ifc_message.site_id == None: return
 			site = Site.query.get(ifc_message.site_id)
+			# Filter out retweets or urls
+			# C#
+			# if (text.IndexOf("@") == 0 || text.IndexOf("RT") == 0) return string.Empty;
+			# if (text.LastIndexOf("http") != -1)
+			#	 text = text.Substring(0, text.LastIndexOf("http"));
+			if '@' in ifc_message.message or 'RT' in ifc_message.message:
+				ifc_message.posted = 1
+				db.flush()
+				print('Skipped filtered message:\n{}'.format(ifc_message))
+				return
+			if 'http' in ifc_message.message:
+				message = ifc_message.message[:ifc_message.message.index('http')]
+			else:
+				message = ifc_message.message
 			r = requests.post(self.publish_url.format(site.ifc_room_id), 
 				data = { 
 					'api_key': site.ifc_key,
@@ -266,7 +280,7 @@ class IFlyPoster:
 					'name': ifc_message.from_name,
 					'picture_url': ifc_message.picture_url,
 					'profile_url': 'javascript:void(0)',
-					'message': ifc_message.message,
+					'message': message,
 					'color': '#222222',
 					'roles': '0'
 				})
@@ -291,7 +305,9 @@ class IFlyReader:
 		#todo db-config
 		self.api_url = "https://api.iflychat.com/api/1.1/threads/get"
 		self.api_key = "Ff3bAAZyGtK09tos5ZfXZLEvRy_60nkFsVMhy79vvykW6831"
-		self.room_ids = ['2','3','4','6','7']
+#		3 is stackedbids.com
+#		self.room_ids = ['2','3','4','6','7']
+		self.room_ids = ['2','4','6','7']
 		#start_timestamp = ms
 		#end_timestamp = ms
 		self.limit = "5"
@@ -301,6 +317,7 @@ class IFlyReader:
 		while running:
 			try:
 				r = self.getThreadHistory()
+#				print('Thread history count: ' + str(len(r)))
 				for j in r:
 					exists = IFC_Message.query.filter(IFC_Message.message_id == j['message_id'])
 					if exists.count() != 0:
@@ -325,7 +342,7 @@ class IFlyReader:
 				print('\nError in iFlyChat reader..\n' + str(e))
 				pass
 			
-			time.sleep(10)
+			time.sleep(30)
 	def getThreadHistory(self):
 		try:
 			r = requests.post(self.api_url, data = { 'api_key': self.api_key, 'room_id': self.room_ids, 'limit': self.limit })

@@ -242,6 +242,16 @@ def user_remove(id):
 	db.flush()
 	return redirect(url_for('site.users'))
 
+@site.route('user_toggle/<int:id>/')
+def user_toggle(id):
+	try:
+		user = User.query.get(id)
+		print('Toggling user: {}'.format(user))
+		user.active = 1 if user.active == 0 else 0
+		db.flush()
+		return redirect(url_for('site.users'))
+	except TemplateNotFound:
+		abort(404)
 
 ##############
 ### Sourcs ###

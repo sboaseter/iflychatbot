@@ -16,6 +16,7 @@
             </thead>
             <tbody>
 				{% for u in all_users %}
+					{% set toggle_url = url_for('site.user_toggle', id=u.id) %}
                     <tr>
                         <td>
                             <a href="#"><img style="max-height:24px;" src="static/iflychat.png"> {{ u.name }}</a>
@@ -28,11 +29,11 @@
 							{% endif %}
                         </td>
 						{% if u.active %}
-                            <td><span class="label label-success">Y</span></td>
+                            <td><a href="{{ toggle_url }}"<span class="label label-success">Y</span></a></td>
 						{% else %}
-                            <td><span class="label label-default">N</span></td>
+                            <td><a href="{{ toggle_url }}"><span class="label label-default">N</span></a></td>
 						{% endif %}
-                        
+
                         <td><img src="{{ u.image }}" alt="profile_pic" style="max-height:32px;" /></td>
 						<td style="text-align:right;">
 							<a href="{{ url_for('site.user_detail', id=u.id) }}" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-edit"></a>
