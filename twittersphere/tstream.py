@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from __future__ import print_function
 import sys
 import threading
@@ -66,6 +68,12 @@ class TwitterSphere(StreamListener):
 
 				except KeyError:
 					print('\nTweet with no text: {0}'.format(str(all_data).encode('utf-8')))
+					return True
+
+				# Prevent duplicates
+				exists = Source_Tweet.query.filter(Source_Tweet.text == tweet)
+				if exists.count() != 0:
+					print('Duplicate in on_data, from where?\n\t{}'.format(tweet.encode('utf-8')))
 					return True
 
 				stdb = Source_Tweet()

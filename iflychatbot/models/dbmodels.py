@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from sqlalchemy import Column, Integer, String, Text, DateTime
 from iflychatbot.models.shared import Base
 
@@ -118,7 +120,7 @@ class IFC_Message(Base):
 
 	def __repr__(self):
 		return "RoomId: {}\nName: {}\nMessage: {}\nPosted: {}\n---"\
-		.format(self.room_id.encode('utf-8'), self.from_name.encode('utf-8'), self.message.encode('utf-8'), self.posted)
+		.format(self.room_id, self.from_name, self.message, self.posted)
 
 
 
