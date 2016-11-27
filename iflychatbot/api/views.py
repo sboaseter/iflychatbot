@@ -49,7 +49,11 @@ def test():
 def ifc_chat():
 	if request.method == 'POST':
 		limit = 50
-		latest_id = int(request.json['latest_id'])
+		latest_id = -1
+		try:
+			latest_id = int(request.json['latest_id'])	
+		except Exception as e:
+			pass
 		#causes one chat room to be populated heavily and the others not.... fix
 		if latest_id == -1:
 			ifc_messages = IFC_Message.query.order_by(IFC_Message.id.desc()).limit(limit)

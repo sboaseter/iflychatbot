@@ -290,7 +290,7 @@ class IFlyPoster:
 					'profile_url': 'javascript:void(0)',
 					'message': message,
 					'color': '#222222',
-					'roles': '0'
+					'roles[]': '0'
 				})
 			if r.ok == True:
 				ifc_message.posted = 1
@@ -299,6 +299,7 @@ class IFlyPoster:
 					print('\nIFlyPoster posted:')
 					print(ifc_message)
 			else:
+				print(r)
 				print('\nIFlyPoster failed posting:')
 				print(ifc_message)
 
